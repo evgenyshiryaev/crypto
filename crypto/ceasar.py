@@ -13,8 +13,8 @@ def ceaserEncrypt(plainText, key, symbols = string.ascii_letters + string.digits
     return cipherText
 
 
-def ceaserDecrypt(plainText, key, symbols = string.ascii_letters + string.digits):
-    return ceaserEncrypt(plainText, -key, symbols)
+def ceaserDecrypt(cipherText, key, symbols = string.ascii_letters + string.digits):
+    return ceaserEncrypt(cipherText, -key, symbols)
 
 
 # print(ceaserEncrypt('This is secret', 69))
