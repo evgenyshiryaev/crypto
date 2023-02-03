@@ -1,5 +1,6 @@
+import crypto.dictionary
 import math
-# import crypto.dictionary
+import random
 
 
 def traspositionEncrypt(plainText, key):
@@ -34,15 +35,26 @@ def traspositionDecrypt(cipherText, key):
     return plainText
 
 
-# plainText = 'Common sense is not so common.'
-# key = 5
-# cipherText = traspositionEncrypt(plainText, key)
-# print(cipherText)
-# print(traspositionDecrypt(cipherText, key))
+def getRandomKey(textLen):
+    return random.randint(2, textLen)
 
-# dictionary = crypto.dictionary.load('../../temp/words_alpha.txt')
-# for i in range(1, len(cipherText)):
-#     text = traspositionDecrypt(cipherText, i)
-#     if crypto.dictionary.analyse(text, dictionary) > 0.8:
-#         print('key = ', i)
-#         print(text)
+
+def traspositionHack(cipherText, dictionaryPath, threshhold):
+    dictionary = crypto.dictionary.load(dictionaryPath)
+    for i in range(1, len(cipherText)):
+        text = traspositionDecrypt(cipherText, i)
+        if crypto.dictionary.analyse(text, dictionary) > threshhold:
+            print('hack key =', i)
+            print(text)
+
+
+if __name__ == '__main__':
+    plainText = 'Common sense is not so common.'
+    key = getRandomKey(len(plainText))
+    print(key)
+
+    cipherText = traspositionEncrypt(plainText, key)
+    print(cipherText)
+    print(traspositionDecrypt(cipherText, key))
+
+    traspositionHack(cipherText, '../../temp/words_alpha.txt', 0.95)

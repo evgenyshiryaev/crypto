@@ -19,8 +19,9 @@ def analyse(text, dictionary):
     return in_dictionary / total
 
 
-# dictionary = load('../../temp/words_alpha.txt')
-# print('fate' in dictionary)
-# print('nofate' in dictionary)
+if __name__ == '__main__':
+    dictionary = load('../../temp/words_alpha.txt')
+    print('fate' in dictionary)
+    print('nofate' in dictionary)
 
-# print(analyse('This is biiiiig secret orno', dictionary))
+    print(analyse('This is biiiiig secret orno', dictionary))

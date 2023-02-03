@@ -32,8 +32,9 @@ def morseDecrypt(cipherText, key = '.-'):
     return plainText
 
 
-# print(morseEncrypt('This is secret'))
-# print(morseDecrypt(morseEncrypt('This is secret')))
+if __name__ == '__main__':
+    print(morseEncrypt('This is secret'))
+    print(morseDecrypt(morseEncrypt('This is secret')))
 
-# print(morseEncrypt('This is secret', '%A'))
-# print(morseDecrypt(morseEncrypt('This is secret', '%A'), '%A'))
+    print(morseEncrypt('This is secret', '%A'))
+    print(morseDecrypt(morseEncrypt('This is secret', '%A'), '%A'))
