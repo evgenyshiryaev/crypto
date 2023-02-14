@@ -1,87 +1,92 @@
 import crypto.dictionary
+import gmpy2
 import random
 import string
-import utils.euclid
+
 
 DEFAULT_SYMBOLS = string.ascii_letters + string.digits
 
-def ceaserHelper(plainText, f, symbols):
-    cipherText = ''
-    for c in plainText:
+
+def helper(plain_text, f, symbols):
+    cipher_text = ''
+    for c in plain_text:
         i = symbols.find(c)
-        cipherText += c if i == -1 else symbols[f(i)]
-    return cipherText
+        cipher_text += c if i == -1 else symbols[f(i)]
+    return cipher_text
 
 
-def ceaserEncrypt(plainText, key, symbols = DEFAULT_SYMBOLS):
-    return affineEncrypt(plainText, 1, key, symbols)
-
-def ceaserDecrypt(cipherText, key, symbols = DEFAULT_SYMBOLS):
-    return affineDecrypt(cipherText, 1, key, symbols)
+def ceaser_encrypt(plain_text, key, symbols=DEFAULT_SYMBOLS):
+    return affine_encrypt(plain_text, 1, key, symbols)
 
 
-def multiplicativeEncrypt(plainText, key, symbols = DEFAULT_SYMBOLS):
-    return affineEncrypt(plainText, key, 0, symbols)
-
-def multiplicativeDecrypt(cipherText, key, symbols = DEFAULT_SYMBOLS):
-    return affineDecrypt(cipherText, key, 0, symbols)
+def ceaser_decrypt(cipher_text, key, symbols=DEFAULT_SYMBOLS):
+    return affine_decrypt(cipher_text, 1, key, symbols)
 
 
-def affineEncrypt(plainText, keyMult, keyAdd, symbols = DEFAULT_SYMBOLS):
-    d = utils.euclid.gcd(keyMult, len(symbols))
-    if d != 1: raise Exception
-    return ceaserHelper(plainText, lambda a : (a * keyMult + keyAdd) % len(symbols), symbols)
-
-def affineDecrypt(cipherText, keyMult, keyAdd, symbols = DEFAULT_SYMBOLS):
-    d = utils.euclid.gcd(keyMult, len(symbols))
-    if d != 1: raise Exception
-    return ceaserHelper(cipherText,
-            lambda a : utils.euclid.divMod(a - keyAdd, keyMult, len(symbols)), symbols)
+def multiplicative_encrypt(plain_text, key, symbols=DEFAULT_SYMBOLS):
+    return affine_encrypt(plain_text, key, 0, symbols)
 
 
-def getRandomKeys(symbols = DEFAULT_SYMBOLS):
-    keyAdd = random.randint(1, len(symbols) - 1)
+def multiplicative_decrypt(cipher_text, key, symbols=DEFAULT_SYMBOLS):
+    return affine_decrypt(cipher_text, key, 0, symbols)
+
+
+def affine_encrypt(plain_text, key_mult, key_add, symbols=DEFAULT_SYMBOLS):
+    d = gmpy2.gcd(key_mult, len(symbols))
+    assert d == 1
+    return helper(plain_text, lambda a: (a * key_mult + key_add) % len(symbols), symbols)
+
+
+def affine_decrypt(cipher_text, key_mult, key_add, symbols=DEFAULT_SYMBOLS):
+    d = gmpy2.gcd(key_mult, len(symbols))
+    assert d == 1
+    return helper(cipher_text, lambda a: gmpy2.divm(a - key_add, key_mult, len(symbols)), symbols)
+
+
+def get_random_keys(symbols=DEFAULT_SYMBOLS):
+    key_add = random.randint(1, len(symbols) - 1)
     while True:
-        keyMult = random.randint(2, len(symbols) - 1)
-        if utils.euclid.gcd(keyMult, len(symbols)) == 1: return keyMult, keyAdd
+        key_mult = random.randint(2, len(symbols) - 1)
+        if gmpy2.gcd(key_mult, len(symbols)) == 1:
+            return key_mult, key_add
 
 
-def affineHack(cipherText, symbols, dictionaryPath, threshhold):
-    dictionary = crypto.dictionary.load(dictionaryPath)
-    for keyMult in range(1, len(symbols)):
-        if utils.euclid.gcd(keyMult, len(symbols)) != 1:
+def affine_hack(cipher_text, symbols, dictionary_path, threshold):
+    dictionary = crypto.dictionary.load(dictionary_path)
+    for key_mult in range(1, len(symbols)):
+        if gmpy2.gcd(key_mult, len(symbols)) != 1:
             continue
-        for keyAdd in range(0, len(symbols)):
-            text = affineDecrypt(cipherText, keyMult, keyAdd, symbols)
-            if crypto.dictionary.analyse(text, dictionary) > threshhold:
-                print('hack keys =', keyMult, keyAdd)
+        for key_add in range(0, len(symbols)):
+            text = affine_decrypt(cipher_text, key_mult, key_add, symbols)
+            if crypto.dictionary.analyse(text, dictionary) > threshold:
+                print('hack keys =', key_mult, key_add)
                 print(text)
 
 
 if __name__ == '__main__':
-    plainText = 'This is secret abc'
-    keyMult, keyAdd = getRandomKeys()
-    print('Keys =', keyMult, keyAdd)
+    _plain_text = 'This is secret abc'
+    _key_mult, _key_add = get_random_keys()
+    print('Keys =', _key_mult, _key_add)
 
-    cipherText = ceaserEncrypt(plainText, keyAdd)
-    print(cipherText)
-    print(ceaserDecrypt(cipherText, keyAdd))
+    _cipher_text = ceaser_encrypt(_plain_text, _key_add)
+    print(_cipher_text)
+    print(ceaser_decrypt(_cipher_text, _key_add))
 
-    cipherText = multiplicativeEncrypt(plainText, keyMult)
-    print(cipherText)
-    print(multiplicativeDecrypt(cipherText, keyMult))
+    _cipher_text = multiplicative_encrypt(_plain_text, _key_mult)
+    print(_cipher_text)
+    print(multiplicative_decrypt(_cipher_text, _key_mult))
 
-    cipherText = affineEncrypt(plainText, keyMult, keyAdd)
-    print(cipherText)
-    print(affineDecrypt(cipherText, keyMult, keyAdd))
+    _cipher_text = affine_encrypt(_plain_text, _key_mult, _key_add)
+    print(_cipher_text)
+    print(affine_decrypt(_cipher_text, _key_mult, _key_add))
 
-    for i in range(2, 100):
-        if utils.euclid.gcd(i, len(DEFAULT_SYMBOLS)) == 1:
-            cipherText = multiplicativeEncrypt(plainText, i)
-            if cipherText == plainText:
-                print('Dup mult key =', i)
+    for _i in range(2, 100):
+        if gmpy2.gcd(_i, len(DEFAULT_SYMBOLS)) == 1:
+            _cipher_text = multiplicative_encrypt(_plain_text, _i)
+            if _cipher_text == _plain_text:
+                print('Dup mult key =', _i)
                 break
 
-    cipherText = affineEncrypt(plainText, keyMult, keyAdd)
-    print(cipherText)
-    affineHack(cipherText, DEFAULT_SYMBOLS, '../../temp/words_alpha.txt', 0.95)
+    _cipher_text = affine_encrypt(_plain_text, _key_mult, _key_add)
+    print(_cipher_text)
+    affine_hack(_cipher_text, DEFAULT_SYMBOLS, '../../temp/words_alpha.txt', 0.95)

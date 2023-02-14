@@ -7,24 +7,24 @@ import string
 DEFAULT_SYMBOLS = string.ascii_lowercase
 
 
-def substitutionEncrypt(plainText, symbols, key, validateKey = True):
-    if validateKey and not isKeyValue(symbols, key): raise Exception
+def encrypt(plain_text, symbols, key, validate_key=True):
+    assert(not validate_key or is_key_valid(symbols, key))
 
-    plainText = plainText.lower()
-    cipherText = ''
-    for c in plainText:
-        if not c in symbols and c in key and not validateKey:
-            cipherText += '_'
+    plain_text = plain_text.lower()
+    cipher_text = ''
+    for c in plain_text:
+        if not c in symbols and c in key and not validate_key:
+            cipher_text += '_'
         else:
-            cipherText += key[symbols.find(c)] if c in symbols else c
-    return cipherText
+            cipher_text += key[symbols.find(c)] if c in symbols else c
+    return cipher_text
 
 
-def substitutionDecrypt(cipherText, symbols, key, validateKey = True):
-    return substitutionEncrypt(cipherText, key, symbols, validateKey)
+def decrypt(cipher_text, symbols, key, validate_key=True):
+    return encrypt(cipher_text, key, symbols, validate_key)
 
 
-def isKeyValue(symbols, key):
+def is_key_valid(symbols, key):
     s = list(symbols)
     k = list(key)
     s.sort()
@@ -32,34 +32,38 @@ def isKeyValue(symbols, key):
     return s == k
 
 
-def getRandomKey(symbols):
+def get_random_key(symbols):
     key = list(symbols)
     random.shuffle(key)
     return ''.join(key)
 
 
-def substitutionHack(cipherText, symbols, dictionaryPath):
+def hack(cipher_text, symbols, dictionary_path):
     mapping = {}
-    for c in symbols: mapping[c] = set()
-    patterns = crypto.dictionary.loadPatterns(dictionaryPath)
+    for c in symbols:
+        mapping[c] = set()
+    patterns = crypto.dictionary.load_patterns(dictionary_path)
 
-    for word in re.compile('[^a-z\s]').sub('', cipherText.lower()).split():
-        wordMapping = {}
-        for c in symbols: wordMapping[c] = set()
+    for word in re.compile('[^a-z\s]').sub('', cipher_text.lower()).split():
+        word_mapping = {}
+        for c in symbols:
+            word_mapping[c] = set()
 
-        wordPattern = crypto.dictionary.getPattern(word)
-        if not wordPattern in patterns: continue
+        word_pattern = crypto.dictionary.get_pattern(word)
+        if not word_pattern in patterns:
+            continue
 
-        for candidate in patterns[wordPattern]:
+        for candidate in patterns[word_pattern]:
             for i in range(len(word)):
-                wordMapping[word[i]].add(candidate[i])
+                word_mapping[word[i]].add(candidate[i])
 
         for c in symbols:
             if len(mapping[c]) == 0:
-                mapping[c] = wordMapping[c]
-            elif wordMapping[c]:
-                mapping[c] &= wordMapping[c]
-                if len(mapping[c]) == 0: raise Exception
+                mapping[c] = word_mapping[c]
+            elif word_mapping[c]:
+                mapping[c] &= word_mapping[c]
+                if len(mapping[c]) == 0:
+                    raise Exception
 
     print(mapping)
 
@@ -71,20 +75,20 @@ def substitutionHack(cipherText, symbols, dictionaryPath):
     key = ''.join(key)
     print(key)
 
-    plainText = substitutionDecrypt(cipherText, symbols, key, False)
-    print(plainText)
+    plain_text = decrypt(cipher_text, symbols, key, False)
+    print(plain_text)
 
 
 if __name__ == '__main__':
-    plainText = 'Common sense is not so common incredible impedance electrochemical impedance spectroscopy nondeterministic.'
+    _plain_text = 'Common sense is not so common incredible impedance electrochemical impedance spectroscopy nondeterministic.'
 
-    key = getRandomKey(DEFAULT_SYMBOLS)
+    _key = get_random_key(DEFAULT_SYMBOLS)
     print(DEFAULT_SYMBOLS)
-    print(key)
+    print(_key)
 
-    cipherText = substitutionEncrypt(plainText, DEFAULT_SYMBOLS, key)
-    print(cipherText)
+    _cipher_text = encrypt(_plain_text, DEFAULT_SYMBOLS, _key)
+    print(_cipher_text)
 
-    print(substitutionDecrypt(cipherText, DEFAULT_SYMBOLS, key))
+    print(decrypt(_cipher_text, DEFAULT_SYMBOLS, _key))
 
-    substitutionHack(cipherText, DEFAULT_SYMBOLS, '../../temp/words_alpha.txt')
+    hack(_cipher_text, DEFAULT_SYMBOLS, '../../temp/words_alpha.txt')

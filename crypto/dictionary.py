@@ -20,17 +20,18 @@ def analyse(text, dictionary):
 
 
 # {'0': ['a'], '0.0': ['aa'], '0.0.1': ['aah', 'aal']}
-def loadPatterns(path):
+def load_patterns(path):
     patterns = {}
     with open(path) as dictionary:
         for word in dictionary.read().split():
-            pattern = getPattern(word)
-            if not pattern in patterns: patterns[pattern] = []
+            pattern = get_pattern(word)
+            if not pattern in patterns:
+                patterns[pattern] = []
             patterns[pattern].append(word)
     return patterns
 
 
-def getPattern(word):
+def get_pattern(word):
     index = 0
     chars = {}
     pattern = []
@@ -43,15 +44,15 @@ def getPattern(word):
 
 
 if __name__ == '__main__':
-    path = '../../temp/words_alpha.txt'
+    _path = '../../temp/words_alpha.txt'
 
-    dictionary = load(path)
+    _dictionary = load(_path)
     # print(dictionary)
-    print('fate' in dictionary)
-    print('nofate' in dictionary)
+    print('fate' in _dictionary)
+    print('nofate' in _dictionary)
 
-    print(analyse('This is biiiiig secret orno', dictionary))
+    print(analyse('This is biiiiig secret orno', _dictionary))
 
-    patterns = loadPatterns(path)
+    _patterns = load_patterns(_path)
     # print(patterns)
-    print(patterns['0.1.2.3.4.5.6.7.8.9.10.11.12.13'])
+    print(_patterns['0.1.2.3.4.5.6.7.8.9.10.11.12.13'])

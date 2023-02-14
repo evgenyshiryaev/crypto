@@ -3,58 +3,58 @@ import math
 import random
 
 
-def traspositionEncrypt(plainText, key):
-    cipherText = ''
+def encrypt(plain_text, key):
+    cipher_text = ''
     for i in range(key):
-        for j in range(i, len(plainText), key):
-            cipherText += plainText[j]
-    return cipherText
+        for j in range(i, len(plain_text), key):
+            cipher_text += plain_text[j]
+    return cipher_text
 
 
-def traspositionDecrypt(cipherText, key):
-    decryptKey = math.ceil(len(cipherText) / key)
-    fullBlocks = len(cipherText) % key
-    if fullBlocks == 0:
-        fullBlocks = key
-    # print(decryptKey, fullBlocks)
+def decrypt(cipher_text, key):
+    decrypt_key = math.ceil(len(cipher_text) / key)
+    full_blocks = len(cipher_text) % key
+    if full_blocks == 0:
+        full_blocks = key
+    # print(decrypt_key, full_blocks)
 
-    plainText = ''
-    for i in range(decryptKey):
+    plain_text = ''
+    for i in range(decrypt_key):
         j = i
         count = 0
         for _ in range(key):
-            if i == decryptKey - 1 and count == fullBlocks:
+            if i == decrypt_key - 1 and count == full_blocks:
                 break
 
-            plainText += cipherText[j]
-            # print(i, j, count, plainText)
-            j += decryptKey
-            if count >= fullBlocks:
+            plain_text += cipher_text[j]
+            # print(i, j, count, plain_text)
+            j += decrypt_key
+            if count >= full_blocks:
                 j -= 1
             count += 1
-    return plainText
+    return plain_text
 
 
-def getRandomKey(textLen):
-    return random.randint(2, textLen)
+def get_random_key(text_len):
+    return random.randint(2, text_len)
 
 
-def traspositionHack(cipherText, dictionaryPath, threshhold):
-    dictionary = crypto.dictionary.load(dictionaryPath)
-    for i in range(1, len(cipherText)):
-        text = traspositionDecrypt(cipherText, i)
-        if crypto.dictionary.analyse(text, dictionary) > threshhold:
+def hack(cipher_text, dictionary_path, threshold):
+    dictionary = crypto.dictionary.load(dictionary_path)
+    for i in range(1, len(cipher_text)):
+        text = decrypt(cipher_text, i)
+        if crypto.dictionary.analyse(text, dictionary) > threshold:
             print('hack key =', i)
             print(text)
 
 
 if __name__ == '__main__':
-    plainText = 'Common sense is not so common.'
-    key = getRandomKey(len(plainText))
-    print(key)
+    _plain_text = 'Common sense is not so common.'
+    _key = get_random_key(len(_plain_text))
+    print(_key)
 
-    cipherText = traspositionEncrypt(plainText, key)
-    print(cipherText)
-    print(traspositionDecrypt(cipherText, key))
+    _cipher_text = encrypt(_plain_text, _key)
+    print(_cipher_text)
+    print(decrypt(_cipher_text, _key))
 
-    traspositionHack(cipherText, '../../temp/words_alpha.txt', 0.95)
+    hack(_cipher_text, '../../temp/words_alpha.txt', 0.95)

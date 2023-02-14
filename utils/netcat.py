@@ -1,5 +1,6 @@
 import socket
 
+
 class Netcat:
 
     DEFAULT_LENGTH = 1024
@@ -8,29 +9,23 @@ class Netcat:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((ip, port))
 
-
-    def read(self, length = DEFAULT_LENGTH):
+    def read(self, length=DEFAULT_LENGTH):
         return self.socket.recv(length)
 
-
-    def readText(self, length = DEFAULT_LENGTH):
+    def read_text(self, length=DEFAULT_LENGTH):
         return self.read(length).decode()
 
-
-    def readTextUntil(self, until):
+    def read_text_until(self, until):
         text = ''
         while not until in text:
-            text += self.readText()
+            text += self.read_text()
         return text
-
 
     def write(self, data):
         self.socket.send(data)
-    
 
-    def writeText(self, text):
+    def write_text(self, text):
         self.write(text.encode())
-
 
     def close(self):
         self.socket.close()
