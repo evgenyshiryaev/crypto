@@ -4,7 +4,7 @@ import random
 import string
 
 
-DEFAULT_SYMBOLS = string.ascii_letters + string.digits
+DEFAULT_SYMBOLS = string.ascii_lowercase
 
 
 def helper(plain_text, f, symbols):
@@ -64,7 +64,7 @@ def affine_hack(cipher_text, symbols, dictionary_path, threshold):
 
 
 if __name__ == '__main__':
-    _plain_text = 'This is secret abc'
+    _plain_text = 'this is secret abc'
     _key_mult, _key_add = get_random_keys()
     print('Keys =', _key_mult, _key_add)
 
