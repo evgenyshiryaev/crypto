@@ -1,7 +1,9 @@
 import socket
 
 
-class Netcat:
+# see https://docs.pwntools.com/en/stable/intro.html
+# use pwn.remote
+class NetcatDeprecated:
 
     DEFAULT_LENGTH = 1024
 

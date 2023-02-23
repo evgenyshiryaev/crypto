@@ -23,30 +23,21 @@ def gcdext_deprecated(a, b):
 # use gmpy2.invert()
 # a * b = 1 mod m
 # 0 if gcd(a, m) != 1
-def mmi_inverted(a, m):
+def invert_deprecated(a, m):
     d, x, _ = gcdext_deprecated(a, m)
     return 0 if d != 1 else x % m
 
 
 # use gmpy2.divm()
 # (a mod m) / b
-def div_mod(a, b, m):
-    i = mmi_inverted(b, m)
+def divm_deprecated(a, b, m):
+    i = invert_deprecated(b, m)
     return (a * i) % m
 
 
 if __name__ == "__main__":
-    print(gcd_deprecated(15, 25))
-    print(gmpy2.gcd(15, 25))
-
-    print(lcm_deprecated(4, 10))
-    print(gmpy2.lcm(4, 10))
-
-    print(gcdext_deprecated(15, 25))
-    print(gmpy2.gcdext(15, 25))
-
-    print(mmi_inverted(7, 15))
-    print(gmpy2.invert(7, 15))
-
-    print(div_mod(7, 11, 15))
-    print(gmpy2.divm(7, 11, 15))
+    assert gcd_deprecated(15, 25) == gmpy2.gcd(15, 25)
+    assert lcm_deprecated(4, 10) == gmpy2.lcm(4, 10)
+    assert gcdext_deprecated(15, 25) == gmpy2.gcdext(15, 25)
+    assert invert_deprecated(7, 15) == gmpy2.invert(7, 15)
+    assert divm_deprecated(7, 11, 15) == gmpy2.divm(7, 11, 15)
