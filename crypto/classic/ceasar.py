@@ -1,4 +1,4 @@
-import crypto.dictionary
+import crypto.classic.dictionary
 import gmpy2
 import random
 import string
@@ -52,13 +52,13 @@ def get_random_keys(symbols=DEFAULT_SYMBOLS):
 
 
 def affine_hack(cipher_text, symbols, dictionary_path, threshold):
-    dictionary = crypto.dictionary.load(dictionary_path)
+    dictionary = crypto.classic.dictionary.load(dictionary_path)
     for key_mult in range(1, len(symbols)):
         if gmpy2.gcd(key_mult, len(symbols)) != 1:
             continue
         for key_add in range(0, len(symbols)):
             text = affine_decrypt(cipher_text, key_mult, key_add, symbols)
-            if crypto.dictionary.analyse(text, dictionary) > threshold:
+            if crypto.classic.dictionary.analyse(text, dictionary) > threshold:
                 print('hack keys =', key_mult, key_add)
                 print(text)
 
@@ -89,4 +89,4 @@ if __name__ == '__main__':
 
     _cipher_text = affine_encrypt(_plain_text, _key_mult, _key_add)
     print(_cipher_text)
-    affine_hack(_cipher_text, DEFAULT_SYMBOLS, '../../temp/words_alpha.txt', 0.95)
+    affine_hack(_cipher_text, DEFAULT_SYMBOLS, '../../../temp/words_alpha.txt', 0.95)
