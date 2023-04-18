@@ -2,9 +2,9 @@
 
 # n = p * q
 # f = (p - 1) * (q - 1)
-# e: gmpy2.gcd(e, f) = 1
+# e: e < f and gmpy2.gcd(e, f) = 1
 # d = gmpy2.invert(e, f)
-# c = m ^ e % n
+# c = m ^ e % n (m < n)
 # m = c ^ d % n
 # public key = (e, n)
 # private key = (d, n)

@@ -1,3 +1,5 @@
+# https://e-maxx.ru/algo/chinese_theorem
+
 import gmpy2
 
 
