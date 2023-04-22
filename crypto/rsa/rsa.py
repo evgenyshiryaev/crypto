@@ -3,9 +3,9 @@
 # n = p * q
 # f = (p - 1) * (q - 1)
 # e: e < f and gmpy2.gcd(e, f) = 1
-# d = gmpy2.invert(e, f)
+# d = gmpy2.invert(e, f)  <=>  ed = 1 + kf
 # c = m ^ e % n (m < n)
-# m = c ^ d % n
+# m = c ^ d % n = m ^ ed % n
 # public key = (e, n)
 # private key = (d, n)
 
@@ -70,7 +70,7 @@ def generate_key(bits):
     return e, d, n
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     _block_len = 10
 
     _plain_text = 'nofatebutwhatwemake'
