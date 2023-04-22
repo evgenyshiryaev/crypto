@@ -3,6 +3,7 @@ import socket
 
 # see https://docs.pwntools.com/en/stable/intro.html
 # use pwn.remote
+# context.log_level = 'error'
 class NetcatDeprecated:
 
     DEFAULT_LENGTH = 1024
