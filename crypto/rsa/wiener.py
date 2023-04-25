@@ -22,26 +22,24 @@ def generate_key(bits):
             break
     e = int(gmpy2.invert(d, f))
 
-    return e, n
+    return n, e, d
 
 
-def hack(e, n):
+def hack(n, e):
+    m = random.randrange(2, n)
+    c = pow(m, e, n)
     nd = utils.continued_fraction.from_cf(utils.continued_fraction.to_cf(e, n))
     for k, d in zip(nd[0], nd[1]):
-        if k == 0:
+        if m != pow(c, d, n):
             continue
         f = (e * d - 1) // k
-
         p = sympy.Symbol('p', integer=True)
         roots = sympy.solve(p ** 2 + (f - n - 1) * p + n, p)
-        if len(roots) == 2 and roots[0] * roots[1] == n:
-            return roots
+        return roots[0], roots[1], d
     return None
 
 
 if __name__ == '__main__':
-    _BITS = 256
-
-    _e, _n = generate_key(_BITS)
-    ps = hack(_e, _n)
-    assert ps is not None and ps[0] * ps[1] == _n
+    _n, _e, _d = generate_key(256)
+    _hacked = hack(_n, _e)
+    assert (_n, _d) == (_hacked[0] * _hacked[1], _hacked[2])
