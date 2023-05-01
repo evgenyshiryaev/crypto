@@ -1,15 +1,19 @@
 # see https://www.pycryptodome.org/
 
+# p, q - primes
 # n = p * q
+# f - Euler function
 # f = (p - 1) * (q - 1)
-# e: e < f and gmpy2.gcd(e, f) = 1
+# e - public exponent
+# e < f and gmpy2.gcd(e, f) = 1
 # d = gmpy2.invert(e, f)  <=>  ed = 1 + kf
-# c = m ^ e % n (m < n)
-# m = c ^ d % n = m ^ ed % n
+# m - plain text (m < n), c - cypher text
+# c = pow(m, e, n)
+# m = pow(c, d, n) = pow(m , e * d, n)
 # public key = (e, n)
 # private key = (d, n)
 
-import Crypto.Util.number
+from Crypto.Util.number import getPrime, getRandomNBitInteger
 import gmpy2
 import string
 
@@ -58,12 +62,11 @@ def decrypt(cipher_text, key, block_len, plain_text_len):
 
 
 def generate_key(bits):
-    p = Crypto.Util.number.getPrime(bits)
-    q = Crypto.Util.number.getPrime(bits)
+    p, q = getPrime(bits), getPrime(bits)
     n = p * q
     f = (p - 1) * (q - 1)
     while True:
-        e = Crypto.Util.number.getRandomNBitInteger(bits)
+        e = getRandomNBitInteger(bits)
         if e < f and gmpy2.gcd(e, f) == 1:
             break
     d = int(gmpy2.invert(e, f))
