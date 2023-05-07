@@ -1,3 +1,6 @@
+from Crypto.Util.number import bytes_to_long as b2l
+
+
 # ETAOIN SHRDLU
 ETAOIN = {
     ord(' '): 3,
@@ -29,7 +32,7 @@ def key_sizes(enc, max_size=40, count=3):
             h.append(hamming(enc[start: start + key_size], enc[start + key_size: start + 2 * key_size]))
         h = sum(h) / len(h) / key_size
 
-        print(key_size, h)
+        # print(key_size, h)
         if len(r) == count and h < r[2][0]:
             r.pop(count - 1)
         if len(r) < count:
@@ -38,7 +41,7 @@ def key_sizes(enc, max_size=40, count=3):
     return tuple(map(lambda x: x[1], r))
 
 
-def solve_single_xor(enc):
+def solve_1_char_xor(enc):
     best_key = -1
     best_score = 0
     for key in range(256):
@@ -51,6 +54,14 @@ def solve_single_xor(enc):
             best_score = score
             best_key = key
     return best_key, best_score
+
+
+def solve_multi_char_xor(enc, key_size):
+    key = []
+    for key_i in range(key_size):
+        c = [enc[i] for i in range(key_i, len(enc), key_size)]
+        key.append(solve_1_char_xor(c)[0])
+    return key
 
 
 def mtp(cs):
@@ -81,13 +92,12 @@ def mtp_space(cs, ms):
             if ms[cs_i][c_i] != 0:
                 continue
 
-            space = True
+            non_space_c = 0
             for cs_j in range(cs_len):
                 x = cs[cs_i][c_i] ^ cs[cs_j][c_i]
                 if x != 0 and x < 0x40:
-                    space = False
-                    break
-            if space:
+                    non_space_c += 1
+            if non_space_c < c_len // 10:  # play with this
                 ms[cs_i][c_i] = 0x20
                 for cs_j in range(cs_len):
                     if ms[cs_j][c_i] == 0:
@@ -113,3 +123,16 @@ if __name__ == '__main__':
            bytes.fromhex('cb0df2c63f721c573ebfba21702fc36e9ea9ee50000c38a5e91ddd7ab0fb'),
            bytes.fromhex('c913e796023d1c4a2befbd367032d82bdfecf55e02406fa7f548ce2997f4')]
     print(mtp(_cs))
+
+    _enc = b''
+    for _c in _cs:
+        _enc += _c
+    _key_sizes = key_sizes(_enc)
+    print(_key_sizes)
+    key = solve_multi_char_xor(_enc, _key_sizes[0])
+
+    # not enough text for correct key
+    _m = ''
+    for i in range(len(_enc)):
+        _m += chr(_enc[i] ^ key[i % _key_sizes[0]])
+    print(_m)
