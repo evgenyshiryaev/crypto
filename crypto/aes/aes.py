@@ -24,12 +24,12 @@ def encrypt(plaintext, key):
 
     add_round_key(state, w, 0, nb)
 
-    for r in range(1, nr + 1):
+    for rnd in range(1, nr + 1):
         sub_bytes(state)
         shift_rows(state)
-        if r != nr:
+        if rnd != nr:
             mix_columns(state)
-        add_round_key(state, w, r, nb)
+        add_round_key(state, w, rnd, nb)
 
     return state_to_bytes(state)
 

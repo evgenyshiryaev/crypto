@@ -13,19 +13,41 @@ def state_to_bytes(state):
     return data
 
 
+# https://camo.githubusercontent.com/77e8022c3c0518d1849d94611dccf3d0c9d3a2694b34ef99a2189f12153686c7/68747470733a2f2f692e696d6775722e636f6d2f5a4a3375576b492e6a7067
+# zero round key to key scheduling
 def key_expansion(key, nb, nr, nk):
+    # w0 - w43 for AES-128 (4 * 11)
     w = [None] * nb * (nr + 1)
 
+    # init round 0 key
     for i in range(nk):
         w[i] = word((key[4 * i], key[4 * i + 1], key[4 * i + 2], key[4 * i + 3]))
 
-    for i in range(nk, nb * (nr + 1)):
+    for i in range(nk, len(w)):
         temp = w[i - 1]
         if i % nk == 0:
             temp = sub_word(rot_word(temp)) ^ r_con[i // nk]
-        elif nk > 6 and i % nk == 4:
+        elif nk == 8 and i % nk == 4:
             temp = sub_word(temp)
         w[i] = w[i - nk] ^ temp
+
+    return w
+
+
+# last round key to key scheduling
+# !!! implemented for AES-128 only !!!
+def inv_key_expansion(key, nb, nr, nk):
+    w = [None] * nb * (nr + 1)
+
+    # init last round key
+    for i in range(nk):
+        w[len(w) - nk + i] = word((key[4 * i], key[4 * i + 1], key[4 * i + 2], key[4 * i + 3]))
+
+    for i in range(len(w) - nk - 1, -1, -1):
+        temp = w[i + nk - 1]
+        if i % nk == 0:
+            temp = sub_word(rot_word(temp)) ^ r_con[i // nk + 1]
+        w[i] = temp ^ w[i + nk]
 
     return w
 
@@ -116,8 +138,28 @@ def xtime(a):
 
 
 def add_round_key(state, w, rnd, nb):
-    for c in range(4):
-        wrd = w[rnd * nb + c]
-        bs = [wrd >> i & 0xff for i in (24, 16, 8, 0)]
-        for r in range(4):
-            state[r][c] ^= bs[r]
+    for x in range(4):
+        bs = w[rnd * nb + x].to_bytes(4, 'big')
+        for y in range(4):
+            state[y][x] ^= bs[y]
+
+
+if __name__ == '__main__':
+    import random
+
+    # AES-128
+    _key = random.randbytes(16)
+    # print(_key.hex())
+    _key_exp = key_expansion(_key, 4, 10, 4)
+    # for _k in _key_exp:
+    #     print(hex(_k), end=' ')
+    # print()
+    _key10 = b''
+    for _i in range(-4, 0):
+        _key10 += _key_exp[_i].to_bytes(4, 'big')
+    # print(_key10.hex())
+    _inv_key_exp = inv_key_expansion(_key10, 4, 10, 4)
+    # for _k in _inv_key_exp:
+    #     print(hex(_k), end=' ')
+    # print()
+    assert _key_exp == _inv_key_exp
