@@ -1,3 +1,4 @@
+# https://www.davidwong.fr/blockbreakers/aes.html
 # https://github.com/joeylemon/python-aes
 
 # block = 128 bits = 16 bytes = 4 x 4 matrix
@@ -14,6 +15,7 @@
 from crypto.aes.aes_helper import *
 
 
+# https://www.davidwong.fr/blockbreakers/aes_10_encryption.html
 def encrypt(plaintext, key):
     nb = 4  # columns (words) number
     nk = len(key) // 4  # words number comprising key (4, 6 or 8)

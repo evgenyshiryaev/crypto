@@ -13,6 +13,7 @@ def state_to_bytes(state):
     return data
 
 
+# https://www.davidwong.fr/blockbreakers/aes_4_key_scheduler.html
 # https://camo.githubusercontent.com/77e8022c3c0518d1849d94611dccf3d0c9d3a2694b34ef99a2189f12153686c7/68747470733a2f2f692e696d6775722e636f6d2f5a4a3375576b492e6a7067
 # zero round key to key scheduling
 def key_expansion(key, nb, nr, nk):
@@ -26,6 +27,7 @@ def key_expansion(key, nb, nr, nk):
     for i in range(nk, len(w)):
         temp = w[i - 1]
         if i % nk == 0:
+            # https://www.davidwong.fr/blockbreakers/aes_3_rcon.html
             temp = sub_word(rot_word(temp)) ^ r_con[i // nk]
         elif nk == 8 and i % nk == 4:
             temp = sub_word(temp)
@@ -56,16 +58,19 @@ def word(bs):
     return int.from_bytes(bytearray(bs), 'big')
 
 
+# https://www.davidwong.fr/blockbreakers/aes_2_subword.html
 def sub_word(w):
     bs = [w >> i & 0xff for i in (24, 16, 8, 0)]
     return word([s_box[bs[i]] for i in range(4)])
 
 
+# https://www.davidwong.fr/blockbreakers/aes_1_rotword.html
 def rot_word(w):
     bs = [w >> i & 0xff for i in (24, 16, 8, 0)]
     return word((bs[1], bs[2], bs[3], bs[0]))
 
 
+# https://www.davidwong.fr/blockbreakers/aes_6_subbytes.html
 def sub_bytes(state):
     sub_bytes_helper(state, s_box)
 
@@ -80,6 +85,7 @@ def sub_bytes_helper(state, sub):
             state[y][x] = sub[state[y][x]]
 
 
+# https://www.davidwong.fr/blockbreakers/aes_7_shiftrows.html
 def shift_rows(state):
     # do nothing with state[0]
     state[1][0], state[1][1], state[1][2], state[1][3] = state[1][1], state[1][2], state[1][3], state[1][0]
@@ -94,6 +100,7 @@ def inv_shift_rows(state):
     state[3][0], state[3][1], state[3][2], state[3][3] = state[3][1], state[3][2], state[3][3], state[3][0]
 
 
+# https://www.davidwong.fr/blockbreakers/aes_8_mixcolumns.html
 def mix_columns(state):
     mix_columns_helper(state, ax)
 
@@ -137,6 +144,7 @@ def xtime(a):
     return b
 
 
+# https://www.davidwong.fr/blockbreakers/aes_9_addroundkey.html
 def add_round_key(state, w, rnd, nb):
     for x in range(4):
         bs = w[rnd * nb + x].to_bytes(4, 'big')
