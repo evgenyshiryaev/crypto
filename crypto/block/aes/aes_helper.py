@@ -1,4 +1,4 @@
-from crypto.aes.aes_constants import *
+from crypto.block.aes.aes_constants import *
 
 
 def bytes_to_state(data):
