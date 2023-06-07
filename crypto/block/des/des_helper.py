@@ -12,10 +12,10 @@ def key_expansion(key):
     keys = []
     key = bytes_to_bin(key)
     key = permutation(key, pc1)
-    for i in range(1, 17):
+    for i in range(16):
         first, second = key[:28], key[28:]
-        first = first[lshift[i - 1]:] + first[:lshift[i - 1]]
-        second = second[lshift[i - 1]:] + second[:lshift[i - 1]]
+        first = first[lshift[i]:] + first[:lshift[i]]
+        second = second[lshift[i]:] + second[:lshift[i]]
         key = first + second
         keys.append(permutation(key, pc2))
     return keys
