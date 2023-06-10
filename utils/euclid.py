@@ -20,7 +20,7 @@ def gcdext_deprecated(a, b):
     return d, y - (b // a) * x, x
 
 
-# use gmpy2.invert()
+# use gmpy2.invert() or pow(a, -1, m)
 # a * b = 1 mod m
 # 0 if gcd(a, m) != 1
 def invert_deprecated(a, m):
@@ -35,7 +35,7 @@ def divm_deprecated(a, b, m):
     return (a * i) % m
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     assert gcd_deprecated(15, 25) == gmpy2.gcd(15, 25)
     assert lcm_deprecated(4, 10) == gmpy2.lcm(4, 10)
     assert gcdext_deprecated(15, 25) == gmpy2.gcdext(15, 25)
