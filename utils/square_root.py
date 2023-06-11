@@ -1,5 +1,6 @@
 # https://www.rieselprime.de/ziki/Modular_square_root
 # see nummaster.basic.sqrtmod
+# see sympy.ntheory.sqrt_mod
 
 # r^2 = a mod m
 
