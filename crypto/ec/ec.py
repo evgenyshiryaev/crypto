@@ -27,8 +27,6 @@
 # P = k * G - public key (point)
 
 import dataclasses
-
-import gmpy2
 from nummaster.basic import sqrtmod
 import random
 
@@ -50,8 +48,11 @@ class Point(object):
     def __ne__(self, other) -> bool:
         return not (self == other)
 
+    def __hash__(self):
+        return hash((self.x, self.y))
+
     def __neg__(self):
-        return self.create(self.x, (-self.y) % self.curve.p)
+        return self.create(self.x, -self.y % self.curve.p)
 
     def __sub__(self, Q):
         return self + -Q
@@ -59,18 +60,12 @@ class Point(object):
     def __mul__(self, n):
         if n < 0:
             return -self * -n
-        if n == 0:
-            return Ideal(self.curve)
-
-        Q = self
-        R = self if n & 1 == 1 else Ideal(self.curve)
-
-        i = 2
-        while i <= n:
-            Q += Q
-            if n & i == i:
+        R, Q = Ideal(self.curve), self
+        while n:
+            if n & 1:
                 R += Q
-            i <<= 1
+            Q += Q
+            n >>= 1
         return R
 
     def __rmul__(self, n):
@@ -90,6 +85,9 @@ class Ideal(Point):
     def __init__(self, curve):
         self.curve = curve
         self.x, self.y = -1, -1  # just for print
+
+    def __hash__(self):
+        return hash((self.x, self.y))
 
     def __neg__(self) -> "Ideal":
         return self

@@ -1,7 +1,7 @@
 from Crypto.Random.random import getrandbits
 from Crypto.Util.number import getPrime
 import gmpy2
-import utils.garner
+from utils.crt import crt
 
 
 def generate_key(bits, e):
@@ -14,7 +14,7 @@ def generate_key(bits, e):
 
 
 def hack(e, cs, ns):
-    m = utils.garner.solve(cs, ns)
+    m = crt(cs, ns)
     gmpy2.get_context().precision = gmpy2.bit_length(m)
     return int(gmpy2.root(m, e))
 
