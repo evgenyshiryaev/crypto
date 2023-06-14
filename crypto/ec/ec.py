@@ -29,6 +29,7 @@
 import dataclasses
 from nummaster.basic import sqrtmod
 import random
+from typing import Iterator
 
 
 @dataclasses.dataclass
@@ -47,6 +48,10 @@ class Point(object):
 
     def __ne__(self, other) -> bool:
         return not (self == other)
+
+    def __iter__(self) -> Iterator[int]:
+        yield self.x
+        yield self.y
 
     def __hash__(self):
         return hash((self.x, self.y))

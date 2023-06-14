@@ -41,8 +41,8 @@ def verify_non_ec(n, p, x, q, h, r, s):
 # (x, y) - base point
 # d - private key
 # (qx, qy) - public key
-def sign(n, p, a, b, x, y, d, h):
-    curve = WeierstrassCurve(a, b, p)
+def sign(n, p, a, b, x, y, d, h, leak_k=False):
+    curve = WeierstrassCurve(p, a, b)
     g = WeierstrassPoint(curve, x, y)
     while True:
         k = random.randrange(1, n - 1)
@@ -53,7 +53,11 @@ def sign(n, p, a, b, x, y, d, h):
         s = (gmpy2.invert(k, n) * (h + r * d)) % n
         if s == 0:
             continue
-        return r, s
+        return (r, s) if not leak_k else (r, s, k)
+
+
+def hack_sign(n, h, r, s, k):
+    return (s * k - h) * pow(r, -1, n) % n
 
 
 def verify(n, p, a, b, x, y, qx, qy, h, r, s):
@@ -62,7 +66,7 @@ def verify(n, p, a, b, x, y, qx, qy, h, r, s):
     w = int(gmpy2.invert(s, n))
     u1, u2 = (h * w) % n, (r * w) % n
 
-    curve = WeierstrassCurve(a, b, p)
+    curve = WeierstrassCurve(p, a, b)
     g, q = WeierstrassPoint(curve, x, y), WeierstrassPoint(curve, qx, qy)
 
     x2, y2 = u1 * g + u2 * q
@@ -94,9 +98,9 @@ if __name__ == '__main__':
     _p = 9173994463960286046443283581208347763186259956673124494950355357547691504353939232280074212440502746218551
     _x = 2003211441495280373681580353135989451096454735271877946445796761562828872438369708705211942304609816501492
     _y = 7951182218206898899336236765984839060728162606719381140630843891613237674570309194342424205313396423149359
-    _curve = WeierstrassCurve(_a, _b, _p)
+    _curve = WeierstrassCurve(_p, _a, _b)
     _g = WeierstrassPoint(_curve, _x, _y)
-    _d = random.randrange(2, _n - 1)
+    _d = random.randrange(1, _n)
     _q = _g * _d
     _qx = _q.x
     _qy = _q.y
@@ -104,3 +108,6 @@ if __name__ == '__main__':
     assert verify(_n, _p, _a, _b, _x, _y, _qx, _qy, _h, _r, _s)
     assert not verify(_n, _p, _a, _b, _x, _y, _qx, _qy, _h, _r + 1, _s)
     assert not verify(_n, _p, _a, _b, _x, _y, _qx, _qy, _h, _r, _s + 1)
+
+    _r, _s, _k = sign(_n, _p, _a, _b, _x, _y, _d, _h, True)
+    assert _d == hack_sign(_n, _h, _r, _s, _k)
