@@ -4,6 +4,9 @@
 
 # r^2 = a mod m
 
+def legendre(a, m):
+    return pow(a, (m - 1) // 2, m)
+
 
 # m = 3 mod 4
 def sqrtmod_3_4(a, m):
@@ -31,11 +34,16 @@ if __name__ == '__main__':
     _m = 19
     _r = 9
     _a = pow(_r, 2, _m)
+    assert legendre(_a, _m) == 1
     assert sqrtmod_3_4(_a, _m) == _r
     assert sqrtmod(_a, _m) == _r
 
     _m = 13
     _r = 9
     _a = pow(_r, 2, _m)
+    assert legendre(_a, _m) == 1
     assert sqrtmod_5_8(_a, _m) == _r
     assert sqrtmod(_a, _m) == _r
+
+    assert legendre(_a + 2, _m) == _m - 1
+
