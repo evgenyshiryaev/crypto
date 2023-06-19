@@ -24,10 +24,10 @@ def is_padding_valid(enc):
 def padding_oracle_hack(enc):
     dec = b''
 
-    blocks = len(_enc) // 16
+    blocks = len(enc) // 16
 
     for block_i in range(blocks - 2, -1, -1):
-        _enc1 = list(_enc)
+        enc1 = list(enc)
         block_key = [0] * 16
 
         for b_i in range(15, -1, -1):
@@ -35,21 +35,21 @@ def padding_oracle_hack(enc):
             i = 16 * block_i + b_i
 
             for j in range(1, pad_len):
-                _enc1[i + j] = block_key[16 - pad_len + j] ^ pad_len
+                enc1[i + j] = block_key[16 - pad_len + j] ^ pad_len
 
             found = False
             for b in range(256):
-                if b == _enc[i]:
+                if b == enc[i]:
                     continue
-                _enc1[i] = b
-                if is_padding_valid(bytes(_enc1[:len(_enc1) - 16 * (blocks - 2 - block_i)])):
+                enc1[i] = b
+                if is_padding_valid(bytes(enc1[:len(enc1) - 16 * (blocks - 2 - block_i)])):
                     found = True
                     break
             if not found:
-                b = _enc[i]
+                b = enc[i]
 
             block_key[b_i] = b ^ pad_len
-            dec = (_enc[i] ^ block_key[b_i]).to_bytes(1, 'little') + dec
+            dec = (enc[i] ^ block_key[b_i]).to_bytes(1, 'little') + dec
 
     return dec
 
