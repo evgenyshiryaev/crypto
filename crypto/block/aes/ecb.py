@@ -17,19 +17,20 @@ def hack_encrypt(prefix):
 def hack():
     r_len = len(hack_encrypt(b''))
     r = b''
+    bs = b'etoanihsrdlucgwyfmpbkvjxqz01234567890ETOANIHSRDLUCGWYFMPBKVJXQZ_?!{} -.,\'\n'  # search text only
 
     for i in range(r_len):
         block_count = i // 16 + 1
         block0 = (b'\x00' * max(0, 15 - len(r))) + r[-15:]
         block1 = b'\x00' * (15 - len(r) % 16)
-        for bi in range(256):
-            b = bi.to_bytes(1, 'little')
+        # for bi in range(256):
+        for bi in bs:
+            b = bi.to_bytes(1, 'big')
             dec = block0 + b + block1
             enc = hack_encrypt(dec)
             if enc[:16] == enc[16 * block_count: 16 * block_count + 16]:
                 r += b
                 break
-
     return r
 
 
@@ -65,6 +66,5 @@ if __name__ == '__main__':
     print(hack())
 
     _profile_enc = profile_for('test@test.ru')
-    print(_profile_enc)
     print(dec_profile(_profile_enc))
     print(hack_profile_for())
