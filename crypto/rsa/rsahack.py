@@ -46,8 +46,9 @@ def get_f(n, e, d):
     return f
 
 
-def large_n(n, e, c):
-    m = round(c**(1/e))
+def small_m_large_n(n, e, c):
+    gmpy2.get_context().precision = gmpy2.bit_length(c)
+    m = int(gmpy2.root(c, e))
     assert pow(m, e, n) == c
     return m
 
@@ -84,4 +85,4 @@ if __name__ == '__main__':
     _m = getRandomNBitInteger(8)
     _e = 3
     _c = pow(_m, _e, _n)
-    assert _m == large_n(_n, _e, _c)
+    assert _m == small_m_large_n(_n, _e, _c)
