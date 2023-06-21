@@ -7,6 +7,7 @@
 
 from Crypto.Util.number import getPrime, getRandomNBitInteger
 import gmpy2
+import math
 
 
 def small_prime(n, m=100000):
@@ -45,6 +46,12 @@ def get_f(n, e, d):
     return f
 
 
+def large_n(n, e, c):
+    m = round(c**(1/e))
+    assert pow(m, e, n) == c
+    return m
+
+
 if __name__ == '__main__':
     BITS = 256
 
@@ -74,3 +81,7 @@ if __name__ == '__main__':
     _f_hacked = get_f(_n, _e, _d)
     assert _f == _f_hacked
 
+    _m = getRandomNBitInteger(8)
+    _e = 3
+    _c = pow(_m, _e, _n)
+    assert _m == large_n(_n, _e, _c)
