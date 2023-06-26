@@ -1,7 +1,7 @@
 # https://ru.wikipedia.org/wiki/ECDLP
 # https://github.com/ashutosh1206/Crypton/tree/master/Discrete-Logarithm-Problem/Elliptic-Curve-DLP
 
-from crypto.ec.ec import Ideal
+from crypto.ec.ec_base import Ideal
 import math
 from utils.crt import crt
 
@@ -57,7 +57,7 @@ def pohlig_hellman(P, Q, n, factorization):
 
 
 if __name__ == '__main__':
-    from crypto.ec.ec import WeierstrassCurve, WeierstrassPoint
+    from crypto.ec.ec_weierstrass import WeierstrassCurve, WeierstrassPoint
     import random
 
     _p = 721805191

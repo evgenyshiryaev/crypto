@@ -4,8 +4,12 @@
 
 # r^2 = a mod m
 
+# (a/m)
+# https://en.wikipedia.org/wiki/Legendre_symbol
 def legendre(a, m):
-    return pow(a, (m - 1) // 2, m)
+    if a % m == 0:
+        return 0
+    return 1 if pow(a, (m - 1) // 2, m) == 1 else -1
 
 
 # m = 3 mod 4
@@ -45,5 +49,4 @@ if __name__ == '__main__':
     assert sqrtmod_5_8(_a, _m) == _r
     assert sqrtmod(_a, _m) == _r
 
-    assert legendre(_a + 2, _m) == _m - 1
-
+    assert legendre(_a + 2, _m) == -1

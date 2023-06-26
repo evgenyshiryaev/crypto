@@ -1,7 +1,7 @@
 # https://cryptobook.nakov.com/digital-signatures/ecdsa-sign-verify-messages
 # https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm
 
-from crypto.ec.ec import WeierstrassCurve, WeierstrassPoint
+from crypto.ec.ec_weierstrass import WeierstrassCurve, WeierstrassPoint
 import gmpy2
 import random
 
@@ -45,7 +45,7 @@ def sign(n, p, a, b, x, y, d, h, leak_k=False):
     curve = WeierstrassCurve(p, a, b)
     g = WeierstrassPoint(curve, x, y)
     while True:
-        k = random.randrange(1, n - 1)
+        k = random.randrange(1, n)
         x1 = (g * k).x
         r = x1 % n
         if r == 0:
@@ -61,7 +61,7 @@ def hack_sign(n, h, r, s, k):
 
 
 def verify(n, p, a, b, x, y, qx, qy, h, r, s):
-    if not (1 <= r <= n - 1) or not (1 <= s <= n - 1):
+    if not 0 < r < n or not 0 < s < n:
         return False
     w = int(gmpy2.invert(s, n))
     u1, u2 = (h * w) % n, (r * w) % n
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     _n = 6277101735386680763835789423207666416102355444464034513029
     _p = 10166180298296945823124292919210075131727604842553305172844237120426504009660181174228315517750538489078034338780817839046493778272552164349676717470
     _x = 18446744073833008487
-    _d = random.randrange(2, _n - 1)
+    _d = random.randrange(1, _n)
     _q = (_x * _d) % _p
     # _d = (_q * gmpy2.invert(_x, _p)) % _p
     _r, _s = sign_non_ec(_n, _p, _x, _d, _h)
@@ -102,8 +102,7 @@ if __name__ == '__main__':
     _g = WeierstrassPoint(_curve, _x, _y)
     _d = random.randrange(1, _n)
     _q = _g * _d
-    _qx = _q.x
-    _qy = _q.y
+    _qx, _qy = _q.x, _q.y
     _r, _s = sign(_n, _p, _a, _b, _x, _y, _d, _h)
     assert verify(_n, _p, _a, _b, _x, _y, _qx, _qy, _h, _r, _s)
     assert not verify(_n, _p, _a, _b, _x, _y, _qx, _qy, _h, _r + 1, _s)

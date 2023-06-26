@@ -1,6 +1,6 @@
 # https://crypto.stackexchange.com/questions/83308/what-is-the-chainoffools-curveball-attack-on-ecdsa-on-windows-10-cryptoapi
 
-from crypto.ec.ec import WeierstrassCurve, WeierstrassPoint
+from crypto.ec.ec_weierstrass import WeierstrassCurve, WeierstrassPoint
 import gmpy2
 import random
 
