@@ -1,4 +1,5 @@
 # https://en.wikipedia.org/wiki/Euler%27s_totient_function
+# see sympy.ntheory.primitive_root()
 
 # f - Euler totient function
 # f(1)=1
@@ -11,7 +12,7 @@
 # |GF(p)|=f(p)=p-1
 # |G|=f(f(p))=f(p-1), if G=<GF(p)> - all generators
 
-from primefac import primefac
+from sympy.ntheory import primefactors
 
 
 def gens_bruteforce(p):
@@ -29,7 +30,7 @@ def gens_bruteforce(p):
 
 def gens_euler(p):
     f = p - 1
-    factors = set(primefac(f))
+    factors = set(primefactors(f))
     gens = []
     for gen in range(2, p):
         found = True
@@ -43,5 +44,8 @@ def gens_euler(p):
 
 
 if __name__ == '__main__':
+    import sympy.ntheory.residue_ntheory
+
     assert gens_bruteforce(7) == [3, 5]
     assert gens_euler(7) == [3, 5]
+    assert sympy.ntheory.primitive_root(7) == 3

@@ -1,9 +1,11 @@
 # https://en.wikipedia.org/wiki/Baby-step_giant-step
 # https://e-maxx.ru/algo/discrete_log
 # https://en.wikipedia.org/wiki/Pohlig%E2%80%93Hellman_algorithm
+# see sympy.ntheory.discrete_log()
 
 import gmpy2
 import math
+from sympy.ntheory import factorint
 from utils.crt import crt
 
 
@@ -40,23 +42,25 @@ def bsgs(a, b, n):
 # order = n - 1
 # order = mult(p^e)
 # O(sum(e*(log(order) + sqrt(p)))
-def pohlig_hellman(a, b, n, factorization):
+def pohlig_hellman(a, b, p):
+    n = p - 1  # order
     xs, ps = [], []
-    # factorization of (n-1)
-    for p, e in factorization:
-        pe = p ** e
-        npe = (n - 1) // pe
-        ai, bi = pow(a, npe, n), pow(b, npe, n)
-        xi = bsgs(ai, bi, n)
+    for n0, n1 in factorint(n).items():
+        ni = n0 ** n1
+        ai, bi = pow(a, n // ni, p), pow(b, n // ni, p)
+        xi = bsgs(ai, bi, p)
         xs.append(xi)
-        ps.append(pe)
+        ps.append(ni)
     return crt(xs, ps)
 
 
 if __name__ == '__main__':
     import random
-    _a, _n = 7894352216, 604604729
-    _x = random.randrange(2, _n - 1)
-    _b = pow(_a, _x, _n)
-    assert _b == pow(_a, bsgs(_a, _b, _n), _n)
-    assert _b == pow(_a, pohlig_hellman(_a, _b, _n, ((2, 3), (7, 3), (13, 1), (17, 1), (997, 1))), _n)
+    from sympy.ntheory import discrete_log
+
+    _a, _p = 7894352216, 604604729
+    _x = random.randrange(1, _p)
+    _b = pow(_a, _x, _p)
+    assert _b == pow(_a, bsgs(_a, _b, _p), _p)
+    assert _b == pow(_a, pohlig_hellman(_a, _b, _p), _p)
+    assert _b == pow(_a, discrete_log(_p, _b, _a), _p)

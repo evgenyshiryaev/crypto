@@ -1,4 +1,5 @@
 # https://e-maxx.ru/algo/chinese_theorem
+# use sympy.ntheory.modular.crt()
 
 import gmpy2
 
