@@ -1,18 +1,4 @@
-# https://en.wikipedia.org/wiki/Linear_congruential_generator
-
-import gmpy2
-
-
-class Lcg:
-    def __init__(self, m, a, c, x0):
-        self.m = m
-        self.a = a
-        self.c = c
-        self.x = x0
-
-    def next(self):
-        self.x = (self.a * self.x + self.c) % self.m
-        return self.x
+from gmpy2 import invert
 
 
 class LcgJava:
@@ -49,15 +35,11 @@ class LcgJava:
 
     def prev_seed_invert(self, seed1):
         seed0 = seed1 - self.c
-        seed0 *= gmpy2.invert(self.a, self.m + 1)
+        seed0 *= invert(self.a, self.m + 1)
         return seed0 & self.m
 
 
-if __name__ == "__main__":
-    _lcg = Lcg(100, 53, 17, 69)
-    print(_lcg.next())
-    print(_lcg.next())
-
+if __name__ == '__main__':
     _lcg_java = LcgJava(69)
     _x1 = _lcg_java.next()
     _x2 = _lcg_java.next()
