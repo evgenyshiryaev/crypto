@@ -1,0 +1,25 @@
+# https://download.firedaemon.com/FireDaemon-OpenSSL/FireDaemon-OpenSSL-x64-3.1.1.exe
+
+# https://www.openssl.org/docs/man1.0.2/man1/openssl-req.html
+
+# CA key
+openssl req -new -x509 -keyout ca-key.pem -out ca-crt.pem -subj "/C=/ST=/L=/O=MyTLS/OU=IT/CN=root.mytls" -passout pass:"pass"
+openssl x509 -text -noout -in ca-crt.pem
+openssl rsa -text -noout -in ca-key.pem
+
+# server key
+openssl ecparam -out server-ecparam.pem -name prime256v1
+openssl genpkey -paramfile server-ecparam.pem -out server-ecdhkey.pem
+openssl pkey -in server-ecdhkey.pem -pubout -out server-ecdhpubkey.pem
+openssl genrsa -out server-rsakey.pem 1024
+openssl req -new -key server-rsakey.pem -out server-rsa.csr -subj "/C=/ST=/L=/O=MyTLS/OU=IT/CN=server.mytls"
+openssl x509 -req -in server-rsa.csr -CAkey ca-key.pem -CA ca-crt.pem -force_pubkey server-ecdhpubkey.pem -out server-ecdhcert.pem -CAcreateserial -passin pass:"pass"
+
+
+# client key
+openssl ecparam -out client-ecparam.pem -name prime256v1
+openssl genpkey -paramfile client-ecparam.pem -out client-ecdhkey.pem
+openssl pkey -in client-ecdhkey.pem -pubout -out client-ecdhpubkey.pem
+openssl genrsa -out client-rsakey.pem 1024
+openssl req -new -key client-rsakey.pem -out client-rsa.csr -subj "/C=/ST=/L=/O=MyTLS/OU=IT/CN=client.mytls"
+openssl x509 -req -in client-rsa.csr -CAkey ca-key.pem -CA ca-crt.pem -force_pubkey client-ecdhpubkey.pem -out client-ecdhcert.pem -CAcreateserial -passin pass:"pass"
