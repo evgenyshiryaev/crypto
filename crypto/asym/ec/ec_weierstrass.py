@@ -1,7 +1,7 @@
 # y^2 = x^3 + ax + b
 # y^2 + a1xy + a3y = x^3 + a2x^2 + a4x + a6 - generalized Weierstrass
 
-from crypto.ec.ec_base import Curve, Ideal, Point
+from crypto.asym.ec.ec_base import Curve, Ideal, Point
 import dataclasses
 
 

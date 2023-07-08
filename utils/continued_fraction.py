@@ -1,3 +1,5 @@
+# https://en.wikipedia.org/wiki/Continued_fraction
+
 # n - nominators
 # d - denominators
 

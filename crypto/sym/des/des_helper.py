@@ -1,4 +1,4 @@
-from crypto.block.des.des_constants import *
+from crypto.sym.des.des_constants import *
 
 
 # main functions

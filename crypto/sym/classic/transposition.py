@@ -1,4 +1,4 @@
-import crypto.classic.dictionary
+import crypto.sym.classic.dictionary
 import math
 import random
 
@@ -40,10 +40,10 @@ def get_random_key(text_len):
 
 
 def hack(cipher_text, dictionary_path, threshold):
-    dictionary = crypto.classic.dictionary.load(dictionary_path)
+    dictionary = crypto.sym.classic.dictionary.load(dictionary_path)
     for i in range(1, len(cipher_text)):
         text = decrypt(cipher_text, i)
-        if crypto.classic.dictionary.analyse(text, dictionary) > threshold:
+        if crypto.sym.classic.dictionary.analyse(text, dictionary) > threshold:
             print('hack key =', i)
             print(text)
 
@@ -57,4 +57,4 @@ if __name__ == '__main__':
     print(_cipher_text)
     print(decrypt(_cipher_text, _key))
 
-    hack(_cipher_text, '../../../temp/words_alpha.txt', 0.95)
+    hack(_cipher_text, '../../../../temp/words_alpha.txt', 0.95)

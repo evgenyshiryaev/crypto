@@ -1,4 +1,4 @@
-import crypto.classic.dictionary
+import crypto.sym.classic.dictionary
 import random
 import re
 import string
@@ -42,14 +42,14 @@ def hack(cipher_text, symbols, dictionary_path):
     mapping = {}
     for c in symbols:
         mapping[c] = set()
-    patterns = crypto.classic.dictionary.load_patterns(dictionary_path)
+    patterns = crypto.sym.classic.dictionary.load_patterns(dictionary_path)
 
     for word in re.compile('[^a-z\s]').sub('', cipher_text.lower()).split():
         word_mapping = {}
         for c in symbols:
             word_mapping[c] = set()
 
-        word_pattern = crypto.classic.dictionary.get_pattern(word)
+        word_pattern = crypto.sym.classic.dictionary.get_pattern(word)
         if not word_pattern in patterns:
             continue
 
@@ -91,4 +91,4 @@ if __name__ == '__main__':
 
     print(decrypt(_cipher_text, DEFAULT_SYMBOLS, _key))
 
-    hack(_cipher_text, DEFAULT_SYMBOLS, '../../../temp/words_alpha.txt')
+    hack(_cipher_text, DEFAULT_SYMBOLS, '../../../../temp/words_alpha.txt')

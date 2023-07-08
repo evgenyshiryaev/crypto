@@ -10,7 +10,7 @@
 #   16 rounds (Feistel)
 #   inverse initial permutation
 
-from crypto.block.des.des_helper import *
+from crypto.sym.des.des_helper import *
 
 
 def encrypt(plaintext, key):

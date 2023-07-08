@@ -1,7 +1,7 @@
 # https://en.wikipedia.org/wiki/Schnorr_signature
 # https://crypto.stackexchange.com/questions/34863/ec-schnorr-signature-multiple-standard
 
-from crypto.ec.ec_weierstrass import WeierstrassCurve, WeierstrassPoint
+from crypto.asym.ec.ec_weierstrass import WeierstrassCurve, WeierstrassPoint
 from Crypto.Util.number import bytes_to_long
 import hashlib
 import random

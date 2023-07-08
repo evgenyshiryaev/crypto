@@ -2,7 +2,7 @@
 # https://github.com/ashutosh1206/Crypton/tree/master/RSA-encryption/Attack-LSBit-Oracle-variant
 # https://blog.bi0s.in/2019/09/29/Crypto/PubKey-Enc/InCTFi19-waRSAw/
 
-import crypto.rsa.rsa
+import crypto.asym.rsa
 import gmpy2
 import random
 import sympy
@@ -81,7 +81,7 @@ def hack_plain_text_bits_restart(m, n, e, d, c):
 
 if __name__ == '__main__':
     _BITS = 128
-    _e, _d, _n = crypto.rsa.rsa.generate_key(_BITS)
+    _e, _d, _n = crypto.asym.rsa.generate_key(_BITS)
     _m = random.randrange(1, _n)
     _c = pow(_m, _e, _n)
 

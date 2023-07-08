@@ -12,7 +12,7 @@
 # - MixColumns (except final round)
 # - AddRoundKey
 
-from crypto.block.aes.aes_helper import *
+from crypto.sym.aes.aes_helper import *
 
 
 # https://www.davidwong.fr/blockbreakers/aes_10_encryption.html

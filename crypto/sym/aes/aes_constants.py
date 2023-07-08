@@ -1,4 +1,4 @@
-from crypto.block.spn.spn_helper import invert_box
+from crypto.sym.spn.spn_helper import invert_box
 
 
 s_box = (

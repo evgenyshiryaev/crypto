@@ -1,7 +1,7 @@
 # by^2 = x^3 + ax^2 + x
 # b * (a^2 - 4) = 0 - singular curve
 
-from crypto.ec.ec_base import Curve, Ideal, Point
+from crypto.asym.ec.ec_base import Curve, Point
 import dataclasses
 
 

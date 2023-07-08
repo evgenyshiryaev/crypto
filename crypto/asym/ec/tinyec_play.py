@@ -1,4 +1,4 @@
-from crypto.ec.ec_base import compress_point, uncompress_point
+from crypto.asym.ec.ec_base import compress_point, uncompress_point
 import secrets
 from tinyec import registry
 from tinyec.ec import Curve, SubGroup

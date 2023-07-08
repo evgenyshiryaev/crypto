@@ -46,7 +46,7 @@ def get_pattern(word):
 
 
 if __name__ == '__main__':
-    _path = '../../../temp/words_alpha.txt'
+    _path = '../../../../temp/words_alpha.txt'
 
     _dictionary = load(_path)
     # print(dictionary)

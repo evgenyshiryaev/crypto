@@ -1,7 +1,7 @@
 # https://cryptobook.nakov.com/digital-signatures/ecdsa-sign-verify-messages
 # https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm
 
-from crypto.ec.ec_weierstrass import WeierstrassCurve, WeierstrassPoint
+from crypto.asym.ec.ec_weierstrass import WeierstrassCurve, WeierstrassPoint
 import gmpy2
 import random
 

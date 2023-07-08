@@ -7,7 +7,7 @@
 
 
 from utils.bits import INT_MAX
-from crypto.block.aes.aes import encrypt
+from crypto.sym.aes.aes import encrypt
 import math
 from pwn import xor
 

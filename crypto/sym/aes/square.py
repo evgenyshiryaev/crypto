@@ -1,6 +1,6 @@
 # https://www.davidwong.fr/blockbreakers/square.html
 
-from crypto.block.aes.aes_helper import *
+from crypto.sym.aes.aes_helper import *
 import random
 from tqdm import tqdm
 

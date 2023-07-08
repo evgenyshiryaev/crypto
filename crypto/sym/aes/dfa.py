@@ -1,7 +1,7 @@
 # https://github.com/UMD-CSEC/UMDCTF-Public-Challenges/tree/main/UMDCTF2022/crypto/DFA-AES
 # https://www.researchgate.net/publication/221005703_DFA_on_AES
 
-from crypto.block.aes.aes_helper import *
+from crypto.sym.aes.aes_helper import *
 import random
 from pwn import xor
 

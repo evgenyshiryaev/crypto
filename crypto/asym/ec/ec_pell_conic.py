@@ -4,7 +4,7 @@
 # d != x^2 mod p
 # (x0, y0) x (x1, y1) = (x0x1 + dy0y1, x0y1+x1y0)
 
-from crypto.ec.ec_base import Curve, Ideal, Point
+from crypto.asym.ec.ec_base import Curve, Ideal, Point
 import dataclasses
 from gmpy2 import legendre
 from sympy.ntheory import sqrt_mod
@@ -67,3 +67,5 @@ if __name__ == '__main__':
     _field_map = CurveFieldMap(_curve)
     _g = _field_map.point_to_field(_G)
     _p = _field_map.point_to_field(_P)
+    print(_g)
+    print(_p)
