@@ -21,7 +21,7 @@ def generate_key(bits, incr=69):
 
 def encrypt(m, pub_key):
     B = pub_key
-    m = bin(bytes_to_long(m))[2:].rjust(len(B), '0')
+    m = bin(bytes_to_long(m))[2:].zfill(len(B))
     return sum([int(mi) * bi for mi, bi in zip(m, B)])
 
 
