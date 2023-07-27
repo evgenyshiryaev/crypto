@@ -29,7 +29,8 @@ def encrypt(m, pub_key):
 
 def decrypt(c, priv_key):
     p, q = priv_key
-    m = ''.join(['0' if legendre(ci, p) == 1 and legendre(ci, q) == 1 else '1' for ci in c])
+    # no need to check additionally legendre(ci, q) == 1
+    m = ''.join(['0' if legendre(ci, p) == 1 else '1' for ci in c])
     return long_to_bytes(int(m, 2))
 
 

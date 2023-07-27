@@ -29,6 +29,19 @@ def fact_small_pq_diff(n, m=100000):
     return None
 
 
+# n = (a - b) * (a + b)
+# k * n + b^2 = a^2
+def fact_squares_diff(n, m=100000):
+    for k in (1, 3):
+        kn = k * n
+        for b in range(1, m):
+            s = kn + b * b
+            if gmpy2.is_square(s):
+                a = int(gmpy2.sqrt(s))
+                return int(gmpy2.gcd(a - b, n)), int(gmpy2.gcd(a + b, n))
+    return None
+
+
 def fact_same_p(n0, n1):
     gcd = int(gmpy2.gcd(n0, n1))
     return gcd, n0 // gcd, n1 // gcd if gcd != 1 else None
@@ -56,6 +69,16 @@ def fact_n_f(n, f):
     return -p, -q
 
 
+def pollard_p_1(n, m=100000):
+    a = 2
+    for j in range(2, m):
+        a = pow(a, j, n)
+        d = gmpy2.gcd(a - 1, n)
+        if 1 < d < n:
+            return d
+    return None
+
+
 if __name__ == '__main__':
     from Crypto.Util.number import getPrime, getRandomNBitInteger
 
@@ -69,6 +92,8 @@ if __name__ == '__main__':
         if gmpy2.is_prime(_q):
             break
     assert (_p, _q) == fact_small_pq_diff(_p * _q)
+
+    assert (_p, _q) == fact_squares_diff(_p * _q)
 
     _p, _q0, _q1 = getPrime(_BITS), getPrime(_BITS), getPrime(_BITS)
     assert (_p, _q0, _q1) == fact_same_p(_p * _q0, _p * _q1)
@@ -85,3 +110,9 @@ if __name__ == '__main__':
     _p, _q = getPrime(_BITS), getPrime(_BITS)
     _n, _f = _p * _q, (_p - 1) * (_q - 1)
     assert set([_p, _q]) == set(fact_n_f(_n, _f))
+
+
+    assert pollard_p_1(13927189) == 3823
+    assert pollard_p_1(168441398857) == 350437
+    _p, _q = getPrime(32), getPrime(32)
+    assert pollard_p_1(_p * _q) in (_p, _q)
