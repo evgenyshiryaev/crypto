@@ -69,7 +69,7 @@ def fact_n_f(n, f):
     return -p, -q
 
 
-def pollard_p_1(n, m=100000):
+def fact_pollard_p_1(n, m=100000):
     a = 2
     for j in range(2, m):
         a = pow(a, j, n)
@@ -77,6 +77,23 @@ def pollard_p_1(n, m=100000):
         if 1 < d < n:
             return d
     return None
+
+
+# https://en.wikipedia.org/wiki/Shor%27s_algorithm
+# a - fixed point, r - order
+# a^r = 1 mod n
+# n | a^r - 1
+# n | (a^r/2 - 1) * (a^r/2 + 1)
+def fact_shor(n, a, m=100000):
+    for r in range(2, m, 2):
+        if pow(a, r, n) == 1:
+            break
+    if r == m - 1:
+        return None
+    p = int(gmpy2.gcd(pow(a, r // 2, n) + 1, n))
+    if p == 1 or p == n:
+        return None
+    return p, n // p
 
 
 if __name__ == '__main__':
@@ -112,7 +129,12 @@ if __name__ == '__main__':
     assert set([_p, _q]) == set(fact_n_f(_n, _f))
 
 
-    assert pollard_p_1(13927189) == 3823
-    assert pollard_p_1(168441398857) == 350437
+    assert fact_pollard_p_1(13927189) == 3823
+    assert fact_pollard_p_1(168441398857) == 350437
     _p, _q = getPrime(32), getPrime(32)
-    assert pollard_p_1(_p * _q) in (_p, _q)
+    assert fact_pollard_p_1(_p * _q) in (_p, _q)
+
+    _n = 0x7fe8cafec59886e9318830f33747cafd200588406e7c42741859e15994ab62410438991ab5d9fc94f386219e3c27d6ffc73754f791e7b2c565611f8fe5054dd132b8c4f3eadcf1180cd8f2a3cc756b06996f2d5b67c390adcba9d444697b13d12b2badfc3c7d5459df16a047ca25f4d18570cd6fa727aed46394576cfdb56b41
+    _a = 0x372f0e88f6f7189da7c06ed49e87e0664b988ecbee583586dfd1c6af99bf20345ae7442012c6807b3493d8936f5b48e553f614754deb3da6230fa1e16a8d5953a94c886699fc2bf409556264d5dced76a1780a90fd22f3701fdbcb183ddab4046affdc4dc6379090f79f4cd50673b24d0b08458cdbe509d60a4ad88a7b4e2921
+    _p, _q = fact_shor(_n, _a)
+    assert _n == _p * _q
