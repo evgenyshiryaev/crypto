@@ -44,7 +44,7 @@ def gens_euler(p):
 
 
 if __name__ == '__main__':
-    import sympy.ntheory.residue_ntheory
+    import sympy.ntheory
 
     assert gens_bruteforce(7) == [3, 5]
     assert gens_euler(7) == [3, 5]
