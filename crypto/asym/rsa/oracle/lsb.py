@@ -2,9 +2,6 @@
 # https://github.com/ashutosh1206/Crypton/tree/master/RSA-encryption/Attack-LSBit-Oracle-variant
 # https://blog.bi0s.in/2019/09/29/Crypto/PubKey-Enc/InCTFi19-waRSAw/
 
-import crypto.asym.rsa
-import gmpy2
-import random
 import sympy
 import tqdm
 
@@ -34,7 +31,7 @@ class LsbBinarySearch:
 
 def hack_binary_search(m, n, e, d, c):
     hack = LsbBinarySearch(n, e, c)
-    for _ in tqdm.tqdm(range(gmpy2.bit_length(n))):
+    for _ in tqdm.tqdm(range(n.bit_length())):
         next_c = hack.next_c()
         hack.report_parity(pow(next_c, d, n) & 1)
     assert m == int(hack.right)
@@ -47,7 +44,7 @@ class LsbPlainTextBits:
         self.c = c
         self.m = m
         self.i = i
-        self.inv = gmpy2.invert(2, n)
+        self.inv = pow(2, -1, n)
 
     def next_c(self):
         return self.c * pow(self.inv, self.i * self.e, self.n) % self.n
@@ -61,7 +58,7 @@ class LsbPlainTextBits:
 
 def hack_plain_text_bits(m, n, e, d, c):
     hack = LsbPlainTextBits(n, e, c)
-    for _ in tqdm.tqdm(range(gmpy2.bit_length(n))):
+    for _ in tqdm.tqdm(range(n.bit_length())):
         next_c = hack.next_c()
         hack.report_parity(pow(next_c, d, n) & 1)
     assert m == hack.m
@@ -69,19 +66,21 @@ def hack_plain_text_bits(m, n, e, d, c):
 
 def hack_plain_text_bits_restart(m, n, e, d, c):
     hack = LsbPlainTextBits(n, e, c)
-    for i in tqdm.tqdm(range(gmpy2.bit_length(n) // 2)):
+    for i in tqdm.tqdm(range(n.bit_length() // 2)):
         next_c = hack.next_c()
         hack.report_parity(pow(next_c, d, n) & 1)
     hack = LsbPlainTextBits(n, e, c, hack.m, hack.i)
-    for _ in tqdm.tqdm(range(i, gmpy2.bit_length(n))):
+    for _ in tqdm.tqdm(range(i, n.bit_length())):
         next_c = hack.next_c()
         hack.report_parity(pow(next_c, d, n) & 1)
     assert m == hack.m
 
 
 if __name__ == '__main__':
+    from crypto.asym.rsa.rsa import generate_key
+    import random
     _BITS = 128
-    _e, _d, _n = crypto.asym.rsa.generate_key(_BITS)
+    _e, _d, _n = generate_key(_BITS)
     _m = random.randrange(1, _n)
     _c = pow(_m, _e, _n)
 
