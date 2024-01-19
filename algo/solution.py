@@ -1,14 +1,11 @@
 import sys
 input = sys.stdin.readline
-def inp():
+def ini():
     return int(input())
-def inlt():
+def ins():
+    return input().strip()
+def ina():
     return list(map(int, input().split()))
-def insr():
-    s = input()
-    return list(s[:len(s) - 1])
-def invr():
-    return map(int, input().split())
 
-def print_array(a, d=' '):
-    print(d.join(map(str, a)))
+for _ in range(ini()):
+    pass
