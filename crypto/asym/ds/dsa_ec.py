@@ -2,7 +2,6 @@
 # https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm
 
 from crypto.asym.ec.ec_weierstrass import WeierstrassCurve, WeierstrassPoint
-import gmpy2
 import random
 
 
@@ -12,29 +11,27 @@ import random
 # (x, y) - base point
 # d - private key
 # (qx, qy) - public key
-def sign(n, p, a, b, x, y, d, h, leak_k=False):
+# k - nonce
+def sign(n, p, a, b, x, y, d, h, k=None, leak_k=False):
     curve = WeierstrassCurve(p, a, b)
     g = WeierstrassPoint(curve, x, y)
     while True:
-        k = random.randrange(1, n)
+        if k is None:
+            k = random.randrange(1, n)
         x1 = (g * k).x
         r = x1 % n
         if r == 0:
             continue
-        s = gmpy2.invert(k, n) * (h + r * d) % n
+        s = pow(k, -1, n) * (h + r * d) % n
         if s == 0:
             continue
         return (r, s) if not leak_k else (r, s, k)
 
 
-def hack_sign(n, h, r, s, k):
-    return (s * k - h) * pow(r, -1, n) % n
-
-
 def verify(n, p, a, b, x, y, qx, qy, h, r, s):
     if not 0 < r < n or not 0 < s < n:
         return False
-    w = int(gmpy2.invert(s, n))
+    w = pow(s, -1, n)
     u1, u2 = h * w % n, r * w % n
 
     curve = WeierstrassCurve(p, a, b)
@@ -44,6 +41,20 @@ def verify(n, p, a, b, x, y, qx, qy, h, r, s):
     if x2 == 0 and y2 == 0:
         return False
     return x2 % n == r
+
+
+# s = k^-1 * (h + r * d)
+# d = (s * k - h) * r^-1
+def hack_known_k(n, h, r, s, k):
+    return (s * k - h) * pow(r, -1, n) % n
+
+
+# k * s0 = h0 + r * d
+# k * s1 = h1 + r * d
+# r is same for same k
+# k = (h1 - h0) * (s1 - s0)^-1
+def hack_same_k(n, h0, h1, s0, s1):
+    return (h1 - h0) * pow(s1 - s0, -1, n) % n
 
 
 if __name__ == '__main__':
@@ -66,5 +77,9 @@ if __name__ == '__main__':
     assert not verify(_n, _p, _a, _b, _x, _y, _qx, _qy, _h, _r + 1, _s)
     assert not verify(_n, _p, _a, _b, _x, _y, _qx, _qy, _h, _r, _s + 1)
 
-    _r, _s, _k = sign(_n, _p, _a, _b, _x, _y, _d, _h, True)
-    assert _d == hack_sign(_n, _h, _r, _s, _k)
+    _r, _s, _k = sign(_n, _p, _a, _b, _x, _y, _d, _h, None, True)
+    assert _d == hack_known_k(_n, _h, _r, _s, _k)
+
+    _h1 = int(hashlib.sha512(b'Just another message to sign with love').hexdigest(), 16)
+    _, _s1 = sign(_n, _p, _a, _b, _x, _y, _d, _h1, _k)
+    assert _k == hack_same_k(_n, _h, _h1, _s, _s1)

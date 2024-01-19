@@ -16,6 +16,7 @@ from utils.crt import crt
 def bsgs(a, b, p, n=None):
     if n is None:
         n = n_order(a, p)
+        # sage: Mod(a, p).multiplicative_order()
     m = math.ceil(math.sqrt(n))
 
     # baby step

@@ -76,7 +76,8 @@ def sub_bytes(state):
 
 
 def inv_sub_bytes(state):
-    sub_bytes_helper(state, inv_s_box)
+    # sub_bytes_helper(state, inv_s_box)
+    pass
 
 
 def sub_bytes_helper(state, sub):

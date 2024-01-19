@@ -2,6 +2,7 @@ from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
 from pwn import *
+import string
 
 
 key = get_random_bytes(16)
@@ -17,15 +18,13 @@ def hack_encrypt(prefix):
 def hack():
     r_len = len(hack_encrypt(b''))
     r = b''
-    bs = b'etoanihsrdlucgwyfmpbkvjxqz01234567890ETOANIHSRDLUCGWYFMPBKVJXQZ_?!{} -.,\'\n'  # search text only
 
     for i in range(r_len):
         block_count = i // 16 + 1
         block0 = (b'\x00' * max(0, 15 - len(r))) + r[-15:]
         block1 = b'\x00' * (15 - len(r) % 16)
-        # for bi in range(256):
-        for bi in bs:
-            b = bi.to_bytes(1, 'big')
+        for c in string.printable:
+            b = c.encode()
             dec = block0 + b + block1
             enc = hack_encrypt(dec)
             if enc[:16] == enc[16 * block_count: 16 * block_count + 16]:

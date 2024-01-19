@@ -17,7 +17,7 @@
 # P = k * G - public key (point)
 
 import dataclasses
-from nummaster.basic import sqrtmod
+from sympy import sqrt_mod
 from typing import Iterator
 
 
@@ -122,5 +122,5 @@ def compress_point(point):
 
 def uncompress_point(cpoint, p, a, b):
     x, is_odd = cpoint
-    y = sqrtmod(pow(x, 3, p) + a * x + b, p)
+    y = sqrt_mod(pow(x, 3, p) + a * x + b, p)
     return (x, y) if bool(is_odd) == bool(y & 1) else (x, p - y)

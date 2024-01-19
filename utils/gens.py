@@ -49,3 +49,4 @@ if __name__ == '__main__':
     assert gens_bruteforce(7) == [3, 5]
     assert gens_euler(7) == [3, 5]
     assert sympy.ntheory.primitive_root(7) == 3
+    # sage: primitive_root(7)
