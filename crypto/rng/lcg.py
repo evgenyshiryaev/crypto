@@ -41,7 +41,7 @@ def restore_params(y, m=None, a=None, c=None):
     for i in range(1, len(y)):
         assert lcg.next() == y[i]
 
-    return m, a, c
+    return int(m), int(a), int(c)
 
 
 if __name__ == '__main__':
@@ -51,3 +51,9 @@ if __name__ == '__main__':
 
     _y = [_lcg.next() for _ in range(6)]
     assert (_m, _a, _c) == restore_params(_y)
+
+    _y = [_lcg.next() for _ in range(3)]
+    assert (_m, _a, _c) == restore_params(_y, _m)
+
+    _y = [_lcg.next() for _ in range(2)]
+    assert (_m, _a, _c) == restore_params(_y, _m, _a)
