@@ -1,3 +1,5 @@
+# https://github.com/miekrr/HashPump
+
 # secret_len is known
 # secret is unknown
 # hash(secret) is known
