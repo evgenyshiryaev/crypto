@@ -8,8 +8,14 @@ LONG_BYTES = 8
 LONG_MAX = (1 << (LONG_BYTES * 8)) - 1  # 0xffffffffffffffff
 
 
-def rotate_left(value, n, bits=32):
-    return (value << n) | (value >> (bits - n))
+# rotate left
+def rol(value, n, bits=32):
+    return (value << n) & ((1 << bits) - 1) | (value >> (bits - n))
+
+
+# rotate right
+def ror(value, n, bits=32):
+    return (value << (bits - n)) & ((1 << bits) - 1) | (value >> n)
 
 
 def unshift_right_xor(value, shift):
@@ -30,6 +36,9 @@ def unshift_left_mask_xor(value, shift, mask):
 
 
 if __name__ == '__main__':
+    assert rol(0xCAFEBABE, 10) == 0xFAEAFB2B
+    assert ror(0xCAFEBABE, 10) == 0xAFB2BFAE
+
     _value = random.randint(1, INT_MAX)
     _shift = random.randint(0, 32)
     _mask = random.randint(1, INT_MAX)

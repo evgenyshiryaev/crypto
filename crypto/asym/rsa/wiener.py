@@ -1,5 +1,8 @@
 # https://sagi.io/2016/04/crypto-classics-wieners-rsa-attack/
 
+# ./RsaCtfTool.py --createpub -n N -e E
+# ./RsaCtfTool.py --attack wiener --publickey KEY --private
+
 from Crypto.Util.number import getPrime
 import gmpy2
 import utils.continued_fraction

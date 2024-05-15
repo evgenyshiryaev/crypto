@@ -6,7 +6,7 @@
 
 
 from math import floor, sin
-from utils.bits import INT_BYTES, INT_MAX, LONG_BYTES, LONG_MAX, rotate_left
+from utils.bits import INT_BYTES, INT_MAX, LONG_BYTES, LONG_MAX, rol
 
 
 class md5:
@@ -58,7 +58,7 @@ class md5:
                     g = (7 * i) % 16
                 m = int.from_bytes(chunk[4 * g: 4 * g + 4], 'little')
                 f = (f + a + md5.K[i] + m) & INT_MAX
-                a, b, c, d = d, (b + rotate_left(f, md5.S[i])) & INT_MAX, b, c
+                a, b, c, d = d, (b + rol(f, md5.S[i])) & INT_MAX, b, c
 
             state[0] = (state[0] + a) & INT_MAX
             state[1] = (state[1] + b) & INT_MAX
