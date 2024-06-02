@@ -54,6 +54,11 @@ def licence_test(n):
         solver.add(Implies(And(ord('A') <= flag[i], flag[i] <= ord('Z')),
                            And(ord('0') <= flag[i + 1], flag[i + 1] <= ord('9'))))
 
+    # predefined symbols
+    m = {'F': 5, 'U': 5, '6': 5, '9': 5}
+    for c in m.keys():
+        solver.add(PbEq([(flag[i] == ord(c), 1) for i in range(20)], m[c]))
+
     assert solver.check() == sat
     model = solver.model()
     print(''.join([chr(model[f].as_long()) for f in flag]))
@@ -62,4 +67,4 @@ def licence_test(n):
 set_option(html_mode=False)
 # test0()
 # eight_queens()
-licence_test(20)
+# licence_test(20)

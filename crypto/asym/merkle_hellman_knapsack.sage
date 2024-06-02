@@ -37,27 +37,34 @@ def decrypt(c, priv_key):
     return long_to_bytes(sum([2 ** (len(W) - xi - 1) for xi in x]))
 
 
-def lll_hack(c, pub_key):
-    B, bits = pub_key, len(pub_key)
+def lll_hack_0(c, pub_key):
+    bits = len(pub_key)
     L = identity_matrix(bits)
     L = L.stack(zero_vector(bits))
-    L = L.augment(vector(_pub_key + [-c]))
+    L = L.augment(vector(pub_key + [-c]))
     LR = L.LLL()
 
-    found = False
     for x in LR:
-        if all(xi == 0 or xi == 1 for xi in x[:-1]) and x[-1] == 0:
-            found = True
-            break
-    if not found:
-        print('No good vector')
-        return None
+        if all(xi in (0, 1) for xi in x[:-1]) and x[-1] == 0:
+            return x[0: len(x) - 1]
 
-    m = b''
-    for i in range (0, len(x) - 1, 8):
-        m += long_to_bytes(int(''.join([str(b) for b in x[i: i + 8]]), 2))
-    print(m)
-    return m
+
+def lll_hack_1(c, pub_key):
+    bits = len(pub_key)
+    L = identity_matrix(bits)
+    L = L.stack(vector([1/2] * bits))
+    L = L.augment(vector(pub_key + [c]))
+    LR = L.LLL()
+
+    x = LR[0][:-1]
+    result = [int(x[i] != x[0]) for i in range(bits)]
+
+    if sum([pub_key[i] for i in range(bits) if result[i]]) == c:
+        return result
+    if sum([pub_key[i] for i in range(bits) if result[i] == 0]) == c:
+        for i in range(bits):
+            result[i] = 1 - result[i]
+        return result
 
 
 if __name__ == '__main__':
@@ -67,6 +74,15 @@ if __name__ == '__main__':
     assert _m == decrypt(_c, _priv_key)
 
     _m = b'soo'
-    _pub_key, _priv_key = generate_key(len(_m) * 8)
+    _pub_key, _ = generate_key(len(_m) * 8)
     _c = encrypt(_m, _pub_key)
-    lll_hack(_c, _pub_key)
+    _x = lll_hack_0(_c, _pub_key)
+    if _x is None:
+        _x = lll_hack_1(_c, _pub_key)
+    if _x is None:
+        print('ERROR')
+        exit(1)
+    _m = b''
+    for _i in range (0, len(_x), 8):
+        _m += long_to_bytes(int(''.join([str(_b) for _b in _x[_i: _i + 8]]), 2))
+    print(_m)
