@@ -46,7 +46,7 @@ def lll_hack(c, pub_key):
 
     found = False
     for x in LR:
-        if all(xi == 0 or xi == 1for xi in x[:-1]) and x[-1] == 0:
+        if all(xi == 0 or xi == 1 for xi in x[:-1]) and x[-1] == 0:
             found = True
             break
     if not found:
